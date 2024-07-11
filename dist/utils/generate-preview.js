@@ -1,5 +1,5 @@
-const generatePreview = (ogData: any) => {
-  return `
+const generatePreview = (ogData) => {
+    return `
         <!DOCTYPE html>
         <html>
             <head>
@@ -13,5 +13,4 @@ const generatePreview = (ogData: any) => {
         </html>
     `;
 };
-
 export default generatePreview;

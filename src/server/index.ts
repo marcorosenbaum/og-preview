@@ -3,17 +3,22 @@ import express from "express";
 import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
 import generatePreview from "../utils/generate-preview.js";
 import open from "open";
+
 import { Command } from "commander";
 
-const startServer = () => {
-  const previewPort = 3000;
+const startServer = (port: number) => {
+  const previewPort = 3001;
 
   const app = express();
 
-  app.get("/", (req, res) => {
-    const data = getRoutesAndOgData();
-    const preview = generatePreview(data);
-    res.send(preview);
+  app.get("/", async (req, res) => {
+    try {
+      const data = await getRoutesAndOgData(port);
+      const preview = generatePreview([data]);
+      res.send(preview);
+    } catch (e: any) {
+      console.log("__ERROR_", e.message);
+    }
   });
 
   app.listen(previewPort, () => {
@@ -29,8 +34,10 @@ program
   .version("1.0.0")
   .command("start")
   .description("Start the OG preview server")
-  .action(() => {
-    startServer();
+  .option("-p, --port <port>", "Port to run the server on", "3000")
+  .action((cmd) => {
+    const port = parseInt(cmd.port, 10);
+    startServer(port);
   });
 
 program.parse(process.argv);

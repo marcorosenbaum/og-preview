@@ -15,7 +15,8 @@
     "cherio": "^1.0.0-rc.2",
     "commander": "^12.1.0",
     "express": "^4.19.2",
-    "open": "^10.1.0"
+    "open": "^10.1.0",
+    "puppeteer-core": "^22.13.0"
   },
   "bin": {
     "og-preview": "dist/server/index.js"

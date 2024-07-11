@@ -1,7 +1,9 @@
+#!/usr/bin/env node
 import express from "express";
 import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
 import generatePreview from "../utils/generate-preview.js";
 import open from "open";
+import { Command } from "commander";
 const startServer = () => {
     const previewPort = 3000;
     const app = express();
@@ -15,5 +17,12 @@ const startServer = () => {
         open(`http://localhost:${previewPort}`);
     });
 };
-startServer();
-export { startServer };
+const program = new Command();
+program
+    .version("1.0.0")
+    .command("start")
+    .description("Start the OG preview server")
+    .action(() => {
+    startServer();
+});
+program.parse(process.argv);

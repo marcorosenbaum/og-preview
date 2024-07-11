@@ -1,7 +1,7 @@
 {
   "name": "og-preview",
   "version": "1.0.0",
-  "description": "",
+  "description": "og-preview",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -13,10 +13,11 @@
     "@types/express": "^4.17.21",
     "axios": "^1.7.2",
     "cherio": "^1.0.0-rc.2",
+    "commander": "^12.1.0",
     "express": "^4.19.2",
     "open": "^10.1.0"
   },
   "bin": {
-    "og-preview": "node dist/index.js"
+    "og-preview": "dist/server/index.js"
   }
 }

@@ -13,7 +13,7 @@ const getRoutesAndOgData = (port) => __awaiter(void 0, void 0, void 0, function*
         const browser = yield puppeteer.launch({ channel: "chrome" });
         const page = yield browser.newPage();
         yield page.goto(`http://localhost:${port}`);
-        // image is not being displayed properly
+        yield page.waitForSelector("meta[property='og:title']");
         const ogData = yield page.$eval("head", (head) => {
             var _a, _b, _c;
             const title = ((_a = head

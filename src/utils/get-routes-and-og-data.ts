@@ -11,6 +11,8 @@ const getRoutesAndOgData = async (port: number): Promise<OgData | null> => {
     const browser = await puppeteer.launch({ channel: "chrome" });
     const page = await browser.newPage();
     await page.goto(`http://localhost:${port}`);
+    await page.waitForSelector("meta[property='og:title']");
+
     const ogData = await page.$eval("head", (head) => {
       const title =
         head

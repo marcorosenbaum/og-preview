@@ -13,6 +13,16 @@ interface OgData {
 
 const pages: Page[] = [];
 const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
+  // check for valid website not working properly
+  // const response = await fetch(url);
+  // const contentType = response.headers.get("content-type");
+  // if (!contentType || !contentType.includes("text/html")) {
+  //   console.error(
+  //     "Provided port is not serving an HTML site. Please make sure you provide the port where your project is running."
+  //   );
+  //   return null;
+  // }
+
   const alreadyExistingPage = pages.some((page) => page.url === url);
   if (alreadyExistingPage) {
     return pages;
@@ -59,7 +69,8 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
             href !== null &&
             href !== undefined &&
             href !== "" &&
-            !href.endsWith("/")
+            !href.endsWith("/") &&
+            href.includes("localhost")
         );
     }, url);
 

@@ -9,7 +9,6 @@ interface OgData {
   image: string;
 }
 const generatePreview = (pages: Page[]) => {
-  console.log("Pages: ", pages);
   return pages
     .map(
       (page) => `

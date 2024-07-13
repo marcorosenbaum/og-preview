@@ -10,6 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import puppeteer from "puppeteer-core";
 const pages = [];
 const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* () {
+    // check for valid website not working properly
+    // const response = await fetch(url);
+    // const contentType = response.headers.get("content-type");
+    // if (!contentType || !contentType.includes("text/html")) {
+    //   console.error(
+    //     "Provided port is not serving an HTML site. Please make sure you provide the port where your project is running."
+    //   );
+    //   return null;
+    // }
     const alreadyExistingPage = pages.some((page) => page.url === url);
     if (alreadyExistingPage) {
         return pages;
@@ -47,8 +56,10 @@ const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* 
                 .filter((href) => href !== null &&
                 href !== undefined &&
                 href !== "" &&
-                !href.endsWith("/"));
+                !href.endsWith("/") &&
+                href.includes("localhost"));
         }, url);
+        console.log(links);
         for (const link of links) {
             yield getRoutesAndOgData(link);
         }

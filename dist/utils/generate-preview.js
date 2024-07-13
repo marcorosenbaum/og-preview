@@ -1,5 +1,4 @@
 const generatePreview = (pages) => {
-    console.log("Pages: ", pages);
     return pages
         .map((page) => `
         <html>

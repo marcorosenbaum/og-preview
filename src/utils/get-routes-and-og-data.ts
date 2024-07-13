@@ -1,17 +1,28 @@
 import puppeteer from "puppeteer-core";
 
+interface Page {
+  url: string;
+  ogData: OgData;
+}
+
 interface OgData {
   title: string;
   description: string;
   image: string;
 }
 
-const getRoutesAndOgData = async (port: number): Promise<OgData | null> => {
+// extracts og data from a given url
+const pages: Page[] = [];
+const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
+  const alreadyExistingPage = pages.some((page) => page.url === url);
+  if (alreadyExistingPage) {
+    return pages;
+  }
   try {
     const browser = await puppeteer.launch({ channel: "chrome" });
     const page = await browser.newPage();
-    await page.goto(`http://localhost:${port}`);
-    await page.waitForSelector("meta[property='og:title']");
+    await page.goto(url);
+    await page.waitForNavigation();
 
     const ogData = await page.$eval("head", (head) => {
       const title =
@@ -26,15 +37,33 @@ const getRoutesAndOgData = async (port: number): Promise<OgData | null> => {
         head
           .querySelector("meta[property='og:image']")
           ?.getAttribute("content") || "";
-
       return {
         title,
         description,
         image,
       };
     });
+    pages.push({ url, ogData });
+
+    const links = await page.evaluate((url) => {
+      return Array.from(document.querySelectorAll("a"))
+        .map((anchor) => {
+          let href = anchor.getAttribute("href");
+          if (href && !href.startsWith("http") && !href.startsWith("//")) {
+            href = new URL(href, url).href;
+          }
+          return href;
+        })
+        .filter((href) => href !== null);
+    }, url);
+
+    for (const link of links) {
+      await getRoutesAndOgData(link);
+    }
+
     await browser.close();
-    return ogData;
+
+    return pages;
   } catch (e: any) {
     console.log("__ERROR_", e.message);
     return null;

@@ -7,24 +7,25 @@ import open from "open";
 import { Command } from "commander";
 
 const startServer = (port: number) => {
-  const previewPort = 3001;
+  const previewPort = 3003;
 
   const app = express();
 
   app.get("/", async (req, res) => {
     try {
-      const data = await getRoutesAndOgData(port);
-      const preview = generatePreview([data]);
+      console.log("Generating preview...");
+      const data = await getRoutesAndOgData(`http://localhost:${port}`);
+      const preview = generatePreview(data || []);
       res.send(preview);
+      console.log(
+        `Preview of og-data successfully generated! View at http://localhost:${previewPort}`
+      );
     } catch (e: any) {
       console.log("__ERROR_", e.message);
     }
   });
 
   app.listen(previewPort, () => {
-    console.log(
-      `Preview of og-data is available at http://localhost:${previewPort}`
-    );
     open(`http://localhost:${previewPort}`);
   });
 };

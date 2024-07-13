@@ -8,12 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import puppeteer from "puppeteer-core";
-const getRoutesAndOgData = (port) => __awaiter(void 0, void 0, void 0, function* () {
+// extracts og data from a given url
+const pages = [];
+const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* () {
+    const alreadyExistingPage = pages.some((page) => page.url === url);
+    if (alreadyExistingPage) {
+        return pages;
+    }
     try {
         const browser = yield puppeteer.launch({ channel: "chrome" });
         const page = yield browser.newPage();
-        yield page.goto(`http://localhost:${port}`);
-        yield page.waitForSelector("meta[property='og:title']");
+        yield page.goto(url);
+        yield page.waitForNavigation();
         const ogData = yield page.$eval("head", (head) => {
             var _a, _b, _c;
             const title = ((_a = head
@@ -28,8 +34,23 @@ const getRoutesAndOgData = (port) => __awaiter(void 0, void 0, void 0, function*
                 image,
             };
         });
+        pages.push({ url, ogData });
+        const links = yield page.evaluate((url) => {
+            return Array.from(document.querySelectorAll("a"))
+                .map((anchor) => {
+                let href = anchor.getAttribute("href");
+                if (href && !href.startsWith("http") && !href.startsWith("//")) {
+                    href = new URL(href, url).href;
+                }
+                return href;
+            })
+                .filter((href) => href !== null);
+        }, url);
+        for (const link of links) {
+            yield getRoutesAndOgData(link);
+        }
         yield browser.close();
-        return ogData;
+        return pages;
     }
     catch (e) {
         console.log("__ERROR_", e.message);

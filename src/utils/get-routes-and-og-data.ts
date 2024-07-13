@@ -11,7 +11,6 @@ interface OgData {
   image: string;
 }
 
-// extracts og data from a given url
 const pages: Page[] = [];
 const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
   const alreadyExistingPage = pages.some((page) => page.url === url);
@@ -45,6 +44,7 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
     });
     pages.push({ url, ogData });
 
+    // refactor to filter urls properly and normalize them
     const links = await page.evaluate((url) => {
       return Array.from(document.querySelectorAll("a"))
         .map((anchor) => {
@@ -54,7 +54,13 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
           }
           return href;
         })
-        .filter((href) => href !== null);
+        .filter(
+          (href) =>
+            href !== null &&
+            href !== undefined &&
+            href !== "" &&
+            !href.endsWith("/")
+        );
     }, url);
 
     for (const link of links) {

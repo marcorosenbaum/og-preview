@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import puppeteer from "puppeteer-core";
-// extracts og data from a given url
 const pages = [];
 const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* () {
     const alreadyExistingPage = pages.some((page) => page.url === url);
@@ -35,6 +34,7 @@ const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* 
             };
         });
         pages.push({ url, ogData });
+        // refactor to filter urls properly and normalize them
         const links = yield page.evaluate((url) => {
             return Array.from(document.querySelectorAll("a"))
                 .map((anchor) => {
@@ -44,7 +44,10 @@ const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* 
                 }
                 return href;
             })
-                .filter((href) => href !== null);
+                .filter((href) => href !== null &&
+                href !== undefined &&
+                href !== "" &&
+                !href.endsWith("/"));
         }, url);
         for (const link of links) {
             yield getRoutesAndOgData(link);

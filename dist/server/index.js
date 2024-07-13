@@ -37,7 +37,7 @@ program
     .version("1.0.0")
     .command("start")
     .description("Start the OG preview server")
-    .option("-p, --port <port>", "Port to run the server on", "3000")
+    .option("-p, --port <port>", "Port to run the server on", "3000") // is the default value necessary?
     .action((cmd) => {
     const port = parseInt(cmd.port, 10);
     startServer(port);

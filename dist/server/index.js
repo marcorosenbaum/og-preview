@@ -13,6 +13,8 @@ import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
 import generatePreview from "../utils/generate-preview.js";
 import open from "open";
 import portfinder from "portfinder";
+import axios from "axios";
+import xml2js from "xml2js";
 import { Command } from "commander";
 const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, function* () {
     const previewPort = yield portfinder.getPortPromise({ port: 3000 });
@@ -20,6 +22,14 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
     app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             console.log("Generating preview...");
+            const urls = [];
+            const sitemap = yield axios.get(`http://localhost:${portOfProject}/sitemap.xml`);
+            if (sitemap) {
+                const parser = new xml2js.Parser();
+                const sitemapData = yield parser.parseStringPromise(sitemap.data);
+                urls.push(sitemapData.urlset.url.map((url) => url.loc[0]));
+                console.log("Sitemap found! + urls = " + urls);
+            }
             const data = yield getRoutesAndOgData(`http://localhost:${portOfProject}`);
             const preview = generatePreview(data || []);
             res.send(preview);

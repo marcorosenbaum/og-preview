@@ -4,6 +4,8 @@ import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
 import generatePreview from "../utils/generate-preview.js";
 import open from "open";
 import portfinder from "portfinder";
+import axios from "axios";
+import xml2js from "xml2js";
 
 import { Command } from "commander";
 
@@ -15,6 +17,19 @@ const startServer = async (portOfProject: number) => {
   app.get("/", async (req, res) => {
     try {
       console.log("Generating preview...");
+
+      const urls: string[] = [];
+
+      const sitemap = await axios.get(
+        `http://localhost:${portOfProject}/sitemap.xml`
+      );
+
+      if (sitemap) {
+        const parser = new xml2js.Parser();
+        const sitemapData = await parser.parseStringPromise(sitemap.data);
+        urls.push(sitemapData.urlset.url.map((url: any) => url.loc[0]));
+        console.log("Sitemap found! + urls = " + urls);
+      }
 
       const data = await getRoutesAndOgData(
         `http://localhost:${portOfProject}`

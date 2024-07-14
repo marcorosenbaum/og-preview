@@ -15,16 +15,18 @@ const startServer = async (portOfProject: number) => {
   app.get("/", async (req, res) => {
     try {
       console.log("Generating preview...");
+
       const data = await getRoutesAndOgData(
         `http://localhost:${portOfProject}`
       );
+
       const preview = generatePreview(data || []);
       res.send(preview);
       console.log(
         `Preview of og-data successfully generated! View at http://localhost:${previewPort}`
       );
     } catch (e: any) {
-      console.log("__ERROR_", e.message);
+      console.error("__ERROR_", e.message);
     }
   });
 
@@ -47,13 +49,6 @@ program
       process.exit(1);
     }
     const portOfProject = parseInt(cmd.port, 10);
-
-    // const mainPort = await portfinder.getPortPromise({ port: 3000 });
-    // if (mainPort !== portOfProject) {
-    //   console.log(
-    //     `Port ${portOfProject} is in use, switching to port ${mainPort}.`
-    //   );
-    // }
     startServer(portOfProject);
   });
 

@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import puppeteer from "puppeteer-core";
 const pages = [];
 const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("* using puppeteer *");
     // check for valid website not working properly
     // const response = await fetch(url);
     // const contentType = response.headers.get("content-type");
@@ -24,6 +25,7 @@ const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* 
         return pages;
     }
     try {
+        // What if the user is using a different browser?
         const browser = yield puppeteer.launch({ channel: "chrome" });
         const page = yield browser.newPage();
         yield page.goto(url);

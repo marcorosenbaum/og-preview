@@ -13,6 +13,7 @@ interface OgData {
 
 const pages: Page[] = [];
 const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
+  console.log("* using puppeteer *");
   // check for valid website not working properly
   // const response = await fetch(url);
   // const contentType = response.headers.get("content-type");
@@ -28,6 +29,7 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
     return pages;
   }
   try {
+    // What if the user is using a different browser?
     const browser = await puppeteer.launch({ channel: "chrome" });
     const page = await browser.newPage();
     await page.goto(url);
@@ -74,6 +76,7 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
         );
     }, url);
 
+    console.log(links);
     for (const link of links) {
       await getRoutesAndOgData(link);
     }

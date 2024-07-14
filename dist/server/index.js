@@ -26,7 +26,7 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
             console.log(`Preview of og-data successfully generated! View at http://localhost:${previewPort}`);
         }
         catch (e) {
-            console.log("__ERROR_", e.message);
+            console.error("__ERROR_", e.message);
         }
     }));
     app.listen(previewPort, () => {
@@ -45,12 +45,6 @@ program
         process.exit(1);
     }
     const portOfProject = parseInt(cmd.port, 10);
-    // const mainPort = await portfinder.getPortPromise({ port: 3000 });
-    // if (mainPort !== portOfProject) {
-    //   console.log(
-    //     `Port ${portOfProject} is in use, switching to port ${mainPort}.`
-    //   );
-    // }
     startServer(portOfProject);
 }));
 program.parse(process.argv);

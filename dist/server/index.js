@@ -16,6 +16,7 @@ import portfinder from "portfinder";
 import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
+import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
 const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, function* () {
     const previewPort = yield portfinder.getPortPromise({ port: 3000 });
     const app = express();
@@ -23,14 +24,22 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
         try {
             console.log("Generating preview...");
             const urls = [];
+            let data = null;
             const sitemap = yield axios.get(`http://localhost:${portOfProject}/sitemap.xml`);
+            // const sitemap = null;
             if (sitemap) {
+                console.log("Sitemap found!");
                 const parser = new xml2js.Parser();
                 const sitemapData = yield parser.parseStringPromise(sitemap.data);
                 urls.push(sitemapData.urlset.url.map((url) => url.loc[0]));
                 console.log("Sitemap found! + urls = " + urls);
+                data = urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
+                    return yield getOgDataForNoSpa(url);
+                }));
             }
-            const data = yield getRoutesAndOgData(`http://localhost:${portOfProject}`);
+            if (!sitemap) {
+                data = yield getRoutesAndOgData(`http://localhost:${portOfProject}`);
+            }
             const preview = generatePreview(data || []);
             res.send(preview);
             console.log(`Preview of og-data successfully generated! View at http://localhost:${previewPort}`);

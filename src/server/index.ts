@@ -6,8 +6,9 @@ import open from "open";
 import portfinder from "portfinder";
 import axios from "axios";
 import xml2js from "xml2js";
-
 import { Command } from "commander";
+
+import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
 
 const startServer = async (portOfProject: number) => {
   const previewPort = await portfinder.getPortPromise({ port: 3000 });
@@ -19,21 +20,26 @@ const startServer = async (portOfProject: number) => {
       console.log("Generating preview...");
 
       const urls: string[] = [];
+      let data = null;
 
       const sitemap = await axios.get(
         `http://localhost:${portOfProject}/sitemap.xml`
       );
-
+      // const sitemap = null;
       if (sitemap) {
+        console.log("Sitemap found!");
         const parser = new xml2js.Parser();
         const sitemapData = await parser.parseStringPromise(sitemap.data);
         urls.push(sitemapData.urlset.url.map((url: any) => url.loc[0]));
         console.log("Sitemap found! + urls = " + urls);
+        data = urls.map(async (url) => {
+          return await getOgDataForNoSpa(url);
+        });
       }
 
-      const data = await getRoutesAndOgData(
-        `http://localhost:${portOfProject}`
-      );
+      if (!sitemap) {
+        data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
+      }
 
       const preview = generatePreview(data || []);
       res.send(preview);

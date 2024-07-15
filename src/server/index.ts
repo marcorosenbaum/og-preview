@@ -8,50 +8,49 @@ import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
 
-import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
+import getOgData from "../utils/get-og-data.js";
+import getUrls from "../utils/get-urls.js";
 
 const startServer = async (portOfProject: number) => {
   const previewPort = await portfinder.getPortPromise({ port: 3000 });
-
   const app = express();
 
   app.get("/", async (req, res) => {
     try {
-      console.log("Generating preview...");
+      console.log("Start generating preview...");
 
       let urls: string[] = null;
       let data = [];
 
-      // DUMMY DATA
+      // DUMMY DATA, implement check if SPA
       const isSpa = false;
+
+      const setData = async () => {
+        // refactor to promise.allSettled()
+        data = await Promise.all(
+          urls.map(async (url: string) => {
+            return await getOgData(url);
+          })
+        );
+      };
 
       const sitemap = await axios.get(
         `http://localhost:${portOfProject}/sitemap.xml`
       );
 
-      if (sitemap && !isSpa) {
+      // implement check if sitemap contains urls
+      if (sitemap) {
         const parser = new xml2js.Parser();
         const sitemapData = await parser.parseStringPromise(sitemap.data);
         urls = sitemapData.urlset.url.map((url: any) => url.loc[0]);
-        console.log("Sitemap found! + urls = " + urls);
-        // refactor to promise.allSettled()?
-        data = await Promise.all(
-          urls.map(async (url: string) => {
-            return await getOgDataForNoSpa(url);
-          })
-        );
-      }
-      if (!sitemap && !isSpa) {
-        data = [
-          await getOgDataForNoSpa(`http://localhost:${portOfProject}/products`),
-        ];
+        await setData();
+      } else if (!isSpa) {
+        urls = await getUrls(`http://localhost:${portOfProject}`);
+        await setData();
+      } else {
+        data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
       }
 
-      // if (!sitemap && isSpa) {
-      //   data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
-      // }
-
-      console.log("______data:", data);
       const preview = generatePreview(data || []);
       res.send(preview);
       console.log(

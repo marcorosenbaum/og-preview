@@ -1,8 +1,7 @@
 import axios from "axios";
 import cheerio from "cheerio";
 
-// remember to test with NO SPA project
-const getOgDataForNoSpa = async (url: string) => {
+const getOgData = async (url: string) => {
   console.log("* using axios and cheerio * for url:", url);
   try {
     const response = await axios.get(url);
@@ -17,9 +16,9 @@ const getOgDataForNoSpa = async (url: string) => {
 
     return { url, ogData };
   } catch (error) {
-    console.error("Error fetching OpenGraph data:", error);
+    console.error("Error fetching OpenGraph data:" + error);
     return null;
   }
 };
 
-export default getOgDataForNoSpa;
+export default getOgData;

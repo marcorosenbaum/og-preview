@@ -9,13 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import express from "express";
+import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
 import generatePreview from "../utils/generate-preview.js";
 import open from "open";
 import portfinder from "portfinder";
-import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
-import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
+import getOgData from "../utils/get-og-data.js";
+import getUrls from "../utils/get-urls.js";
 const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, function* () {
     const previewPort = yield portfinder.getPortPromise({ port: 3000 });
     const app = express();
@@ -24,27 +25,39 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
             console.log("Generating preview...");
             let urls = null;
             let data = [];
+            // DUMMY DATA
             const isSpa = false;
-            const sitemap = yield axios.get(`http://localhost:${portOfProject}/sitemap.xml`);
-            if (sitemap && !isSpa) {
-                const parser = new xml2js.Parser();
-                const sitemapData = yield parser.parseStringPromise(sitemap.data);
-                urls = sitemapData.urlset.url.map((url) => url.loc[0]);
-                console.log("Sitemap found! + urls = " + urls);
-                // refactor to promise.allSettled()?
+            const setData = () => __awaiter(void 0, void 0, void 0, function* () {
+                // refactor to promise.allSettled()
+                // data = await Promise.all(
+                //   urls.map(async (url: string) => {
+                //     return await getOgData(url);
+                //   })
+                // );
                 data = yield Promise.all(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
-                    return yield getOgDataForNoSpa(url);
+                    return yield getOgData(url);
                 })));
+            });
+            // const sitemap = await axios.get(
+            //   `http://localhost:${portOfProject}/sitemap.xml`
+            // );
+            const sitemap = false;
+            // implement check for urls in sitemap
+            if (sitemap) {
+                const parser = new xml2js.Parser();
+                // const sitemapData = await parser.parseStringPromise(sitemap.data);
+                // urls = sitemapData.urlset.url.map((url: any) => url.loc[0]);
+                //
+                console.log("Sitemap found! + urls = " + urls);
+                yield setData();
             }
-            if (!sitemap && !isSpa) {
-                data = [
-                    yield getOgDataForNoSpa(`http://localhost:${portOfProject}/products`),
-                ];
+            else if (!isSpa) {
+                urls = yield getUrls(`http://localhost:${portOfProject}`);
+                yield setData();
             }
-            // if (!sitemap && isSpa) {
-            //   data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
-            // }
-            console.log("______data:", data);
+            else {
+                data = yield getRoutesAndOgData(`http://localhost:${portOfProject}`);
+            }
             const preview = generatePreview(data || []);
             res.send(preview);
             console.log(`Preview of og-data successfully generated! View at http://localhost:${previewPort}`);

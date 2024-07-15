@@ -1,11 +1,59 @@
 # og-preview
 
-### Get a preview of all available open graph meta data before deploying your project.
+`og-preview` is a handy CLI tool for developers to preview all available Open Graph meta data from their local development server. This allows you to check how your project's Open Graph data will appear on social media platforms without deploying your project.
 
-#### Package needs to be installed globally "npm i -g og-preview"
+## Installation
 
-Once the project you are working on is running on the dev server, you can simply get a preview of the og-data by executing the command "og-preview start -p port" in the cli.
+To install `og-preview` globally, run the following command:
 
-EXAMPLE: If your project is running on localhost:5173 then you add port 5173. -> "og-preview start -p 5173"
+```sh
+npm install -g og-preview
+```
 
-The package will automatically start a new dev server on a free port and open a new tab in the browser with the preview of all available open graph meta data.
+## Usage
+
+Ensure your project is running on your local development server. For example, if your project is running at http://localhost:5173, you can use og-preview to preview the Open Graph meta data.
+
+## Command
+
+```sh
+og-preview start -p <PORT>
+```
+
+Replace PORT with the port number your local dev server is running on.
+
+## Example
+
+If your project is running on port 5173, use the following command:
+
+```sh
+og-preview start -p 5173
+```
+
+This will generate a preview of all available Open Graph meta data and open it in a new browser tab.
+
+## Features
+
+- **Easy to Use:** Simple CLI command to get a preview of all available Open Graph meta data.
+- **Local Development:** Works with your local dev server, no need to deploy.
+- **Quick Preview:** Instantly opens a new browser tab with the Open Graph preview.
+
+## Example Workflow
+
+1. Start your local development server: Ensure your project is running locally, e.g., http://localhost:5173.
+
+2. Run og-preview: Execute the following command in your CLI:
+
+```sh
+og-preview start -p 5173
+```
+
+View the Preview: A new browser tab will open displaying the Open Graph meta data for your project.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Feel free to submit issues or pull requests. Contributions are welcome!

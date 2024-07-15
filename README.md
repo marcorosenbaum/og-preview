@@ -1,5 +1,7 @@
 # og-preview
 
+Please note: Package is still in development process.
+
 `og-preview` is a handy CLI tool for developers to preview all available Open Graph meta data from their local development server. This allows you to check how your project's Open Graph data will appear on social media platforms without deploying your project.
 
 ## Installation
@@ -49,11 +51,3 @@ og-preview start -p 5173
 ```
 
 View the Preview: A new browser tab will open displaying the Open Graph meta data for your project.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contributing
-
-Feel free to submit issues or pull requests. Contributions are welcome!

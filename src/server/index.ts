@@ -19,27 +19,39 @@ const startServer = async (portOfProject: number) => {
     try {
       console.log("Generating preview...");
 
-      const urls: string[] = [];
-      let data = null;
+      let urls: string[] = null;
+      let data = [];
+      const isSpa = false;
+      // const sitemap = false;
 
       const sitemap = await axios.get(
         `http://localhost:${portOfProject}/sitemap.xml`
       );
-      // const sitemap = null;
-      if (sitemap) {
-        console.log("Sitemap found!");
+
+      if (sitemap && !isSpa) {
         const parser = new xml2js.Parser();
         const sitemapData = await parser.parseStringPromise(sitemap.data);
-        urls.push(sitemapData.urlset.url.map((url: any) => url.loc[0]));
+        urls = sitemapData.urlset.url.map((url: any) => url.loc[0]);
         console.log("Sitemap found! + urls = " + urls);
-        data = urls.map(async (url) => {
-          return await getOgDataForNoSpa(url);
-        });
+        // not working below, newData is object promise
+        const newData = [];
+        newData.push(
+          urls.map(async (url) => {
+            await getOgDataForNoSpa(url);
+          })
+        );
+
+        console.log("new data" + newData);
       }
 
-      if (!sitemap) {
-        data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
-      }
+      // if (!sitemap && isSpa) {
+      //   data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
+      // }
+      // if (!sitemap && !isSpa) {
+      //   data = [
+      //     await getOgDataForNoSpa(`http://localhost:${portOfProject}/products`),
+      //   ];
+      // }
 
       const preview = generatePreview(data || []);
       res.send(preview);

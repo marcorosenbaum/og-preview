@@ -1,10 +1,12 @@
 import axios from "axios";
 import cheerio from "cheerio";
 
+// remember to test with NO SPA project
 const getOgDataForNoSpa = async (url: string) => {
-  console.log("* using axios and cheerio *");
+  console.log("* using axios and cheerio * for url:", url);
   try {
     const response = await axios.get(url);
+
     const $ = cheerio.load(response.data);
 
     const ogData = {

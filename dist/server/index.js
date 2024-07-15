@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import express from "express";
-import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
 import generatePreview from "../utils/generate-preview.js";
 import open from "open";
 import portfinder from "portfinder";
@@ -23,23 +22,31 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
     app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             console.log("Generating preview...");
-            const urls = [];
-            let data = null;
+            let urls = null;
+            let data = [];
+            const isSpa = false;
+            // const sitemap = false;
             const sitemap = yield axios.get(`http://localhost:${portOfProject}/sitemap.xml`);
-            // const sitemap = null;
-            if (sitemap) {
-                console.log("Sitemap found!");
+            if (sitemap && !isSpa) {
                 const parser = new xml2js.Parser();
                 const sitemapData = yield parser.parseStringPromise(sitemap.data);
-                urls.push(sitemapData.urlset.url.map((url) => url.loc[0]));
+                urls = sitemapData.urlset.url.map((url) => url.loc[0]);
                 console.log("Sitemap found! + urls = " + urls);
-                data = urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
-                    return yield getOgDataForNoSpa(url);
-                }));
+                // not working below
+                const newData = [];
+                newData.push(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
+                    yield getOgDataForNoSpa(url);
+                })));
+                console.log("new data" + newData);
             }
-            if (!sitemap) {
-                data = yield getRoutesAndOgData(`http://localhost:${portOfProject}`);
-            }
+            // if (!sitemap && isSpa) {
+            //   data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
+            // }
+            // if (!sitemap && !isSpa) {
+            //   data = [
+            //     await getOgDataForNoSpa(`http://localhost:${portOfProject}/products`),
+            //   ];
+            // }
             const preview = generatePreview(data || []);
             res.send(preview);
             console.log(`Preview of og-data successfully generated! View at http://localhost:${previewPort}`);

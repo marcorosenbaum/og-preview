@@ -21,8 +21,9 @@ const startServer = async (portOfProject: number) => {
 
       let urls: string[] = null;
       let data = [];
+
+      // DUMMY DATA
       const isSpa = false;
-      // const sitemap = false;
 
       const sitemap = await axios.get(
         `http://localhost:${portOfProject}/sitemap.xml`
@@ -33,26 +34,24 @@ const startServer = async (portOfProject: number) => {
         const sitemapData = await parser.parseStringPromise(sitemap.data);
         urls = sitemapData.urlset.url.map((url: any) => url.loc[0]);
         console.log("Sitemap found! + urls = " + urls);
-        // not working below, newData is object promise
-        const newData = [];
-        newData.push(
-          urls.map(async (url) => {
-            await getOgDataForNoSpa(url);
+        // refactor to promise.allSettled()?
+        data = await Promise.all(
+          urls.map(async (url: string) => {
+            return await getOgDataForNoSpa(url);
           })
         );
-
-        console.log("new data" + newData);
+      }
+      if (!sitemap && !isSpa) {
+        data = [
+          await getOgDataForNoSpa(`http://localhost:${portOfProject}/products`),
+        ];
       }
 
       // if (!sitemap && isSpa) {
       //   data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
       // }
-      // if (!sitemap && !isSpa) {
-      //   data = [
-      //     await getOgDataForNoSpa(`http://localhost:${portOfProject}/products`),
-      //   ];
-      // }
 
+      console.log("______data:", data);
       const preview = generatePreview(data || []);
       res.send(preview);
       console.log(

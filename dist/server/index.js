@@ -25,28 +25,26 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
             let urls = null;
             let data = [];
             const isSpa = false;
-            // const sitemap = false;
             const sitemap = yield axios.get(`http://localhost:${portOfProject}/sitemap.xml`);
             if (sitemap && !isSpa) {
                 const parser = new xml2js.Parser();
                 const sitemapData = yield parser.parseStringPromise(sitemap.data);
                 urls = sitemapData.urlset.url.map((url) => url.loc[0]);
                 console.log("Sitemap found! + urls = " + urls);
-                // not working below
-                const newData = [];
-                newData.push(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
-                    yield getOgDataForNoSpa(url);
+                // refactor to promise.allSettled()?
+                data = yield Promise.all(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
+                    return yield getOgDataForNoSpa(url);
                 })));
-                console.log("new data" + newData);
+            }
+            if (!sitemap && !isSpa) {
+                data = [
+                    yield getOgDataForNoSpa(`http://localhost:${portOfProject}/products`),
+                ];
             }
             // if (!sitemap && isSpa) {
             //   data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
             // }
-            // if (!sitemap && !isSpa) {
-            //   data = [
-            //     await getOgDataForNoSpa(`http://localhost:${portOfProject}/products`),
-            //   ];
-            // }
+            console.log("______data:", data);
             const preview = generatePreview(data || []);
             res.send(preview);
             console.log(`Preview of og-data successfully generated! View at http://localhost:${previewPort}`);

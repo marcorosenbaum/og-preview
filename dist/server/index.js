@@ -13,49 +13,55 @@ import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
 import generatePreview from "../utils/generate-preview.js";
 import open from "open";
 import portfinder from "portfinder";
+import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
-import getOgData from "../utils/get-og-data.js";
+import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
 import getUrls from "../utils/get-urls.js";
+import getOgDataForSpa from "../utils/get-og-data-for-spa.js";
 const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, function* () {
     const previewPort = yield portfinder.getPortPromise({ port: 3000 });
     const app = express();
     app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            console.log("Generating preview...");
+            console.log("Start generating preview...");
             let urls = null;
             let data = [];
-            // DUMMY DATA
+            // DUMMY DATA, implement check if SPA
             const isSpa = false;
             const setData = () => __awaiter(void 0, void 0, void 0, function* () {
                 // refactor to promise.allSettled()
-                // data = await Promise.all(
-                //   urls.map(async (url: string) => {
-                //     return await getOgData(url);
-                //   })
-                // );
                 data = yield Promise.all(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
-                    return yield getOgData(url);
+                    return yield getOgDataForNoSpa(url);
                 })));
             });
-            // const sitemap = await axios.get(
-            //   `http://localhost:${portOfProject}/sitemap.xml`
-            // );
-            const sitemap = false;
-            // implement check for urls in sitemap
-            if (sitemap) {
+            try {
+                const sitemap = yield axios.get(`http://localhost:${portOfProject}/sitemap.xml`);
                 const parser = new xml2js.Parser();
-                // const sitemapData = await parser.parseStringPromise(sitemap.data);
-                // urls = sitemapData.urlset.url.map((url: any) => url.loc[0]);
-                //
-                console.log("Sitemap found! + urls = " + urls);
+                const sitemapData = yield parser.parseStringPromise(sitemap.data);
+                urls = sitemapData.urlset.url.map((url) => url.loc[0]);
+            }
+            catch (e) {
+                console.log("No sitemap found, generating urls from the website");
+            }
+            // not dry, refactor !!!
+            if (urls && !isSpa) {
+                console.log("*** TRIGGERED sitemap && !isSpa ***"); // delete before publishing
                 yield setData();
             }
-            else if (!isSpa) {
+            else if (!urls && !isSpa) {
+                console.log("*** TRIGGERED !sitemap && !isSpa ***"); // delete before publishing
                 urls = yield getUrls(`http://localhost:${portOfProject}`);
                 yield setData();
             }
-            else {
+            else if (urls && isSpa) {
+                console.log("*** TRIGGERED sitemap && isSpa ***"); // delete before publishing
+                data = yield Promise.all(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
+                    return yield getOgDataForSpa(url);
+                })));
+            }
+            else if (!urls && isSpa) {
+                console.log("*** TRIGGERED !sitemap && isSpa ***"); // delete before publishing
                 data = yield getRoutesAndOgData(`http://localhost:${portOfProject}`);
             }
             const preview = generatePreview(data || []);
@@ -63,7 +69,7 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
             console.log(`Preview of og-data successfully generated! View at http://localhost:${previewPort}`);
         }
         catch (e) {
-            console.error("__ERROR_", e.message);
+            console.error("_ERROR_", e.message);
         }
     }));
     app.listen(previewPort, () => {

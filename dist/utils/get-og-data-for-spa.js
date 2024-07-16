@@ -8,27 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import puppeteer from "puppeteer-core";
-const pages = [];
-const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("* getRoutesAndOgData with puppeteer *");
-    // check for valid website not working properly
-    // const response = await fetch(url);
-    // const contentType = response.headers.get("content-type");
-    // if (!contentType || !contentType.includes("text/html")) {
-    //   console.error(
-    //     "Provided port is not serving an HTML site. Please make sure you provide the port where your project is running."
-    //   );
-    //   return null;
-    // }
-    const alreadyExistingPage = pages.some((page) => page.url === url);
-    if (alreadyExistingPage) {
-        return pages;
-    }
+const getOgDataForSpa = (url) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("*getOgDataForSpa using puppeteer *");
     try {
         // What if the user is using a different browser?
         const browser = yield puppeteer.launch({ channel: "chrome" });
         const page = yield browser.newPage();
         yield page.goto(url);
+        // await page.waitForSelector("head");
         yield page.waitForNavigation();
         const ogData = yield page.$eval("head", (head) => {
             var _a, _b, _c;
@@ -38,38 +25,14 @@ const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* 
                 .querySelector("meta[property='og:description']")) === null || _b === void 0 ? void 0 : _b.getAttribute("content")) || "";
             const image = ((_c = head
                 .querySelector("meta[property='og:image']")) === null || _c === void 0 ? void 0 : _c.getAttribute("content")) || "";
-            return {
-                title,
-                description,
-                image,
-            };
+            return { title, description, image };
         });
-        pages.push({ url, ogData });
-        // refactor to filter urls properly and normalize them
-        const links = yield page.evaluate((url) => {
-            return Array.from(document.querySelectorAll("a"))
-                .map((anchor) => {
-                let href = anchor.getAttribute("href");
-                if (href && !href.startsWith("http") && !href.startsWith("//")) {
-                    href = new URL(href, url).href;
-                }
-                return href;
-            })
-                .filter((href) => href !== null &&
-                href !== undefined &&
-                href !== "" &&
-                !href.endsWith("/") &&
-                href.includes("localhost"));
-        }, url);
-        for (const link of links) {
-            yield getRoutesAndOgData(link);
-        }
         yield browser.close();
-        return pages;
+        return { url, ogData };
     }
     catch (e) {
         console.log("__ERROR_", e.message);
         return null;
     }
 });
-export default getRoutesAndOgData;
+export default getOgDataForSpa;

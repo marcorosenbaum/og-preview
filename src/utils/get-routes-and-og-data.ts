@@ -1,19 +1,9 @@
 import puppeteer from "puppeteer-core";
-
-interface Page {
-  url: string;
-  ogData: OgData;
-}
-
-interface OgData {
-  title: string;
-  description: string;
-  image: string;
-}
+import { Page } from "../interfaces";
 
 const pages: Page[] = [];
 const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
-  console.log("* using puppeteer *");
+  console.log("* getRoutesAndOgData with puppeteer *");
   // check for valid website not working properly
   // const response = await fetch(url);
   // const contentType = response.headers.get("content-type");
@@ -76,7 +66,6 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
         );
     }, url);
 
-    console.log(links);
     for (const link of links) {
       await getRoutesAndOgData(link);
     }

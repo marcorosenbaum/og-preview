@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import axios from "axios";
 import cheerio from "cheerio";
-// remember to test with NO SPA project
 const getOgDataForNoSpa = (url) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("* using axios and cheerio * for url:", url);
     try {
@@ -23,7 +22,7 @@ const getOgDataForNoSpa = (url) => __awaiter(void 0, void 0, void 0, function* (
         return { url, ogData };
     }
     catch (error) {
-        console.error("Error fetching OpenGraph data:", error);
+        console.error("Error fetching OpenGraph data:" + error);
         return null;
     }
 });

@@ -8,8 +8,9 @@ import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
 
-import getOgData from "../utils/get-og-data.js";
+import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
 import getUrls from "../utils/get-urls.js";
+import getOgDataForSpa from "../utils/get-og-data-for-spa.js";
 
 const startServer = async (portOfProject: number) => {
   const previewPort = await portfinder.getPortPromise({ port: 3000 });
@@ -23,31 +24,45 @@ const startServer = async (portOfProject: number) => {
       let data = [];
 
       // DUMMY DATA, implement check if SPA
-      const isSpa = true;
+      const isSpa = false;
 
       const setData = async () => {
         // refactor to promise.allSettled()
         data = await Promise.all(
           urls.map(async (url: string) => {
-            return await getOgData(url);
+            return await getOgDataForNoSpa(url);
           })
         );
       };
 
-      const sitemap = await axios.get(
-        `http://localhost:${portOfProject}/sitemap.xml`
-      );
-
-      // implement check if sitemap contains urls
-      if (sitemap) {
+      try {
+        const sitemap = await axios.get(
+          `http://localhost:${portOfProject}/sitemap.xml`
+        );
         const parser = new xml2js.Parser();
         const sitemapData = await parser.parseStringPromise(sitemap.data);
         urls = sitemapData.urlset.url.map((url: any) => url.loc[0]);
+      } catch (e) {
+        console.log("No sitemap found, generating urls from the website");
+      }
+
+      // not dry, refactor !!!
+      if (urls && !isSpa) {
+        console.log("*** TRIGGERED sitemap && !isSpa ***"); // delete before publishing
         await setData();
-      } else if (!isSpa) {
+      } else if (!urls && !isSpa) {
+        console.log("*** TRIGGERED !sitemap && !isSpa ***"); // delete before publishing
         urls = await getUrls(`http://localhost:${portOfProject}`);
         await setData();
-      } else {
+      } else if (urls && isSpa) {
+        console.log("*** TRIGGERED sitemap && isSpa ***"); // delete before publishing
+        data = await Promise.all(
+          urls.map(async (url: string) => {
+            return await getOgDataForSpa(url);
+          })
+        );
+      } else if (!urls && isSpa) {
+        console.log("*** TRIGGERED !sitemap && isSpa ***"); // delete before publishing
         data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
       }
 
@@ -57,7 +72,7 @@ const startServer = async (portOfProject: number) => {
         `Preview of og-data successfully generated! View at http://localhost:${previewPort}`
       );
     } catch (e: any) {
-      console.error("__ERROR_", e.message);
+      console.error("_ERROR_", e.message);
     }
   });
 

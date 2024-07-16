@@ -22,7 +22,7 @@ const getOgData = (url) => __awaiter(void 0, void 0, void 0, function* () {
         return { url, ogData };
     }
     catch (error) {
-        console.error("Error fetching OpenGraph data:");
+        console.error("Error fetching OpenGraph data:" + error);
         return null;
     }
 });

@@ -20,7 +20,9 @@ const generatePreview = (pages: Page[]) => {
             <meta property="og:image" content="${page.ogData.image}">
           </head>
           <body style="max-width: 80%; text-align: center; margin: 0 auto;">
-            <p>${page.url}</p>
+            <a style="display: inline-block; padding-top: 2rem;" href=${
+              page.url
+            }>${page.url}</a>
             <div style="display: flex; gap: 2rem; border: 1px solid; border-radius: 0.75rem; background-color: #D1D5DB; padding: 1rem;">
               ${
                 page.ogData.image

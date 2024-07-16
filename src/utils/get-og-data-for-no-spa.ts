@@ -1,7 +1,7 @@
 import axios from "axios";
 import cheerio from "cheerio";
 
-const getOgData = async (url: string) => {
+const getOgDataForNoSpa = async (url: string) => {
   console.log("* using axios and cheerio * for url:", url);
   try {
     const response = await axios.get(url);
@@ -21,4 +21,4 @@ const getOgData = async (url: string) => {
   }
 };
 
-export default getOgData;
+export default getOgDataForNoSpa;

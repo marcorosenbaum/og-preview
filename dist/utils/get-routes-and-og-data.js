@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 const pages = [];
 const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("* getRoutesAndOgData with puppeteer *");
@@ -26,7 +26,7 @@ const getRoutesAndOgData = (url) => __awaiter(void 0, void 0, void 0, function* 
     }
     try {
         // What if the user is using a different browser?
-        const browser = yield puppeteer.launch({ channel: "chrome" });
+        const browser = yield puppeteer.launch();
         const page = yield browser.newPage();
         yield page.goto(url);
         yield page.waitForNavigation();

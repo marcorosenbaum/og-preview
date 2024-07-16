@@ -7,15 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
+// test again
 const getOgDataForSpa = (url) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("*getOgDataForSpa using puppeteer *");
     try {
-        // What if the user is using a different browser?
-        const browser = yield puppeteer.launch({ channel: "chrome" });
+        const browser = yield puppeteer.launch();
         const page = yield browser.newPage();
         yield page.goto(url);
-        // await page.waitForSelector("head");
         yield page.waitForNavigation();
         const ogData = yield page.$eval("head", (head) => {
             var _a, _b, _c;

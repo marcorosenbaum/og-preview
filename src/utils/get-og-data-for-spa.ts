@@ -1,15 +1,13 @@
-import puppeteer from "puppeteer-core";
-import { Page } from "../interfaces";
+import puppeteer from "puppeteer";
 
+// test again
 const getOgDataForSpa = async (url: string) => {
   console.log("*getOgDataForSpa using puppeteer *");
 
   try {
-    // What if the user is using a different browser?
-    const browser = await puppeteer.launch({ channel: "chrome" });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
-    // await page.waitForSelector("head");
     await page.waitForNavigation();
 
     const ogData = await page.$eval("head", (head) => {

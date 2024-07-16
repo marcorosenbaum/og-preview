@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 import { Page } from "../interfaces";
 
 const pages: Page[] = [];
@@ -20,7 +20,7 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
   }
   try {
     // What if the user is using a different browser?
-    const browser = await puppeteer.launch({ channel: "chrome" });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
     await page.waitForNavigation();

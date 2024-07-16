@@ -15,7 +15,7 @@ const generatePreview = (pages: Page[]) => {
       (page) => `
         <html>
           <head>
-            <title>${page.ogData.title}</title>
+            <title>OG-Preview</title>
             <meta name="description" content="${page.ogData.description}">
             <meta property="og:image" content="${page.ogData.image}">
           </head>

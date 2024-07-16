@@ -1,7 +1,7 @@
 {
   "name": "og-preview",
   "version": "1.0.4",
-  "description": "Generates a preview of all avaiable open graph meta data",
+  "description": "Generates a preview of all avaiable open graph meta data. Simply execute a CLI command and preview in the browser how all the links of your website will appear on social media platforms.",
   "main": "index.js",
   "type": "module",
   "scripts": {

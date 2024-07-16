@@ -1,8 +1,8 @@
 # og-preview
 
-Please note: Package is still in development process.
+**Please note: Package is still in development process.**
 
-`og-preview` is a handy CLI tool for developers to preview all available Open Graph meta data from their local development server. This allows you to check how your project's Open Graph data will appear on social media platforms without deploying your project.
+`og-preview` is a handy CLI tool for developers to preview all available Open Graph meta data from their local development server. This allows you to check how your project's Open Graph data will appear on social media platforms without deploying your project or checking every URL manually.
 
 ## Installation
 
@@ -16,19 +16,19 @@ You can then use the package for all projects you are working on.
 
 ## Usage
 
-Ensure your project is running on your local development server. For example, if your project is running at http://localhost:5173, you can use og-preview to preview the Open Graph meta data.
+Ensure your project is running on your local development server. For example, if your project is running at http://localhost:5173, you can use og-preview to preview the Open Graph meta data running on that port.
 
 ## Command
 
-Replace **PORT** with the port number your local dev server is running on.
+Replace **PORT** with the port number your local development server is running on.
 
-If your project **is** a Single Page Application, you must set the flag **--spa**.<br>
+If your project **is** a Single Page Application, you must set the flag **<nobr>--spa</nobr>**.<br>
 
 ```sh
 og-preview start -p PORT --spa
 ```
 
-If your page **is not** a Single Page Application, you must set the flag **--nospa**.
+If your page **is not** a Single Page Application, you must set the flag **<nobr>--nospa</nobr>**.
 
 ```sh
 og-preview start -p PORT --nospa
@@ -66,4 +66,7 @@ This will generate a preview of all available Open Graph meta data and open it i
 og-preview start -p 5173 --spa
 ```
 
-View the Preview: A new browser tab will open displaying the Open Graph meta data for your project.
+View the Preview: A new browser tab will open displaying the Open Graph meta data for your project.<br>
+See example below:
+
+![Open Graph Preview](./src/images/example-preview.png)

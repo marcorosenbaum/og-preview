@@ -1,6 +1,6 @@
 {
   "name": "og-preview",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Generates a preview of all avaiable open graph meta data",
   "main": "index.js",
   "type": "module",
@@ -11,11 +11,13 @@
   "repository": "marcorosenbaum/og-preview",
   "license": "MIT",
   "keywords": [
-    "open-graph",
+    "open graph",
     "og",
     "og-data",
     "open graph preview",
-    "og preview"
+    "og preview",
+    "og-meta-data",
+    "open graph meta data"
   ],
   "dependencies": {
     "@types/express": "^4.17.21",

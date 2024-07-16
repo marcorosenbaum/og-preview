@@ -1,6 +1,6 @@
 {
   "name": "og-preview",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Generates a preview of all avaiable open graph meta data",
   "main": "index.js",
   "type": "module",

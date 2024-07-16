@@ -24,7 +24,7 @@ const startServer = async (portOfProject: number) => {
       let data = [];
 
       // DUMMY DATA, implement check if SPA
-      const isSpa = false;
+      const isSpa = true;
 
       const setData = async () => {
         // refactor to promise.allSettled()

@@ -2,7 +2,7 @@ import cheerio from "cheerio";
 import axios from "axios";
 import url from "url";
 
-async function getUrls(baseUrl: string): Promise<string[]> {
+async function getUrlsForNoSpa(baseUrl: string): Promise<string[]> {
   const visitedUrls = new Set<string>();
   const urlsToVisit = [baseUrl];
 
@@ -40,4 +40,4 @@ async function getUrls(baseUrl: string): Promise<string[]> {
   return Array.from(visitedUrls);
 }
 
-export default getUrls;
+export default getUrlsForNoSpa;

@@ -9,17 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import express from "express";
-import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
-import generatePreview from "../utils/generate-preview.js";
 import open from "open";
 import portfinder from "portfinder";
 import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
+import getUrlsForNoSpa from "../utils/get-urls-for-no-spa.js";
 import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
-import getUrls from "../utils/get-urls.js";
 import getOgDataForSpa from "../utils/get-og-data-for-spa.js";
-const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, function* () {
+import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
+import generatePreview from "../utils/generate-preview.js";
+const startServer = (portOfProject, spa) => __awaiter(void 0, void 0, void 0, function* () {
     const previewPort = yield portfinder.getPortPromise({ port: 3000 });
     const app = express();
     app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,7 +28,8 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
             let urls = null;
             let data = [];
             // DUMMY DATA, implement check if SPA
-            const isSpa = false;
+            const isSpa = spa;
+            console.log("___isSpa___", isSpa);
             const setData = () => __awaiter(void 0, void 0, void 0, function* () {
                 // refactor to promise.allSettled()
                 data = yield Promise.all(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,24 +45,19 @@ const startServer = (portOfProject) => __awaiter(void 0, void 0, void 0, functio
             catch (e) {
                 console.log("No sitemap found, generating urls from the website");
             }
-            // not dry, refactor !!!
             if (urls && !isSpa) {
-                console.log("*** TRIGGERED sitemap && !isSpa ***"); // delete before publishing
                 yield setData();
             }
             else if (!urls && !isSpa) {
-                console.log("*** TRIGGERED !sitemap && !isSpa ***"); // delete before publishing
-                urls = yield getUrls(`http://localhost:${portOfProject}`);
+                urls = yield getUrlsForNoSpa(`http://localhost:${portOfProject}`);
                 yield setData();
             }
             else if (urls && isSpa) {
-                console.log("*** TRIGGERED sitemap && isSpa ***"); // delete before publishing
                 data = yield Promise.all(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
                     return yield getOgDataForSpa(url);
                 })));
             }
             else if (!urls && isSpa) {
-                console.log("*** TRIGGERED !sitemap && isSpa ***"); // delete before publishing
                 data = yield getRoutesAndOgData(`http://localhost:${portOfProject}`);
             }
             const preview = generatePreview(data || []);
@@ -82,12 +78,33 @@ program
     .command("start")
     .description("Start the OG preview server")
     .option("-p, --port <port>", "Port to run the server on")
+    .option("--spa", "Flag to indicate if the project is a SPA")
+    .option("--nospa", "Flag to indicate if the project is not a SPA")
     .action((cmd) => __awaiter(void 0, void 0, void 0, function* () {
     if (cmd.port === undefined) {
         console.error("You must provide a port number! EXAMPLE: If the project that you want to generate an og-preview for is running on port:3000, then execute -> og-preview start -p 3000");
         process.exit(1);
     }
     const portOfProject = parseInt(cmd.port, 10);
-    startServer(portOfProject);
+    let spa = null;
+    try {
+        if (cmd.spa && cmd.nospa) {
+            throw new Error("You can't use both flags at the same time");
+        }
+        else if (!cmd.spa && !cmd.nospa) {
+            throw new Error("You must provide a flag to indicate if the project is a SPA or not. Provide --spa if the project is a SPA or --nospa if the project is not a SPA");
+        }
+        else if (cmd.spa) {
+            spa = true;
+        }
+        else if (cmd.nospa) {
+            spa = false;
+        }
+    }
+    catch (e) {
+        console.error(e.message);
+        process.exit(1);
+    }
+    startServer(portOfProject, spa);
 }));
 program.parse(process.argv);

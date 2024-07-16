@@ -1,21 +1,21 @@
 #!/usr/bin/env node
 import express from "express";
-import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
-import generatePreview from "../utils/generate-preview.js";
 import open from "open";
 import portfinder from "portfinder";
 import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
 
+import getUrlsForNoSpa from "../utils/get-urls-for-no-spa.js";
 import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
-import getUrls from "../utils/get-urls.js";
 import getOgDataForSpa from "../utils/get-og-data-for-spa.js";
+import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
+import generatePreview from "../utils/generate-preview.js";
 
-const startServer = async (portOfProject: number) => {
+const startServer = async (portOfProject: number, spa: boolean) => {
   const previewPort = await portfinder.getPortPromise({ port: 3000 });
-  const app = express();
 
+  const app = express();
   app.get("/", async (req, res) => {
     try {
       console.log("Start generating preview...");
@@ -24,7 +24,8 @@ const startServer = async (portOfProject: number) => {
       let data = [];
 
       // DUMMY DATA, implement check if SPA
-      const isSpa = true;
+      const isSpa = spa;
+      console.log("___isSpa___", isSpa);
 
       const setData = async () => {
         // refactor to promise.allSettled()
@@ -46,23 +47,18 @@ const startServer = async (portOfProject: number) => {
         console.log("No sitemap found, generating urls from the website");
       }
 
-      // not dry, refactor !!!
       if (urls && !isSpa) {
-        console.log("*** TRIGGERED sitemap && !isSpa ***"); // delete before publishing
         await setData();
       } else if (!urls && !isSpa) {
-        console.log("*** TRIGGERED !sitemap && !isSpa ***"); // delete before publishing
-        urls = await getUrls(`http://localhost:${portOfProject}`);
+        urls = await getUrlsForNoSpa(`http://localhost:${portOfProject}`);
         await setData();
       } else if (urls && isSpa) {
-        console.log("*** TRIGGERED sitemap && isSpa ***"); // delete before publishing
         data = await Promise.all(
           urls.map(async (url: string) => {
             return await getOgDataForSpa(url);
           })
         );
       } else if (!urls && isSpa) {
-        console.log("*** TRIGGERED !sitemap && isSpa ***"); // delete before publishing
         data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
       }
 
@@ -87,6 +83,8 @@ program
   .command("start")
   .description("Start the OG preview server")
   .option("-p, --port <port>", "Port to run the server on")
+  .option("--spa", "Flag to indicate if the project is a SPA")
+  .option("--nospa", "Flag to indicate if the project is not a SPA")
   .action(async (cmd) => {
     if (cmd.port === undefined) {
       console.error(
@@ -95,7 +93,24 @@ program
       process.exit(1);
     }
     const portOfProject = parseInt(cmd.port, 10);
-    startServer(portOfProject);
+    let spa = null;
+    try {
+      if (cmd.spa && cmd.nospa) {
+        throw new Error("You can't use both flags at the same time");
+      } else if (!cmd.spa && !cmd.nospa) {
+        throw new Error(
+          "You must provide a flag to indicate if the project is a SPA or not. Provide --spa if the project is a SPA or --nospa if the project is not a SPA"
+        );
+      } else if (cmd.spa) {
+        spa = true;
+      } else if (cmd.nospa) {
+        spa = false;
+      }
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
+    }
+    startServer(portOfProject, spa);
   });
 
 program.parse(process.argv);

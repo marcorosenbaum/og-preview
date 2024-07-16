@@ -9,7 +9,7 @@ import { Command } from "commander";
 import getUrlsForNoSpa from "../utils/get-urls-for-no-spa.js";
 import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
 import getOgDataForSpa from "../utils/get-og-data-for-spa.js";
-import getRoutesAndOgData from "../utils/get-routes-and-og-data.js";
+import getUrlsAndOgDataForSpa from "../utils/get-urls-and-og-data-for-spa.js";
 import generatePreview from "../utils/generate-preview.js";
 
 const startServer = async (portOfProject: number, spa: boolean) => {
@@ -22,10 +22,7 @@ const startServer = async (portOfProject: number, spa: boolean) => {
 
       let urls: string[] = null;
       let data = [];
-
-      // DUMMY DATA, implement check if SPA
       const isSpa = spa;
-      console.log("___isSpa___", isSpa);
 
       const setData = async () => {
         // refactor to promise.allSettled()
@@ -59,7 +56,9 @@ const startServer = async (portOfProject: number, spa: boolean) => {
           })
         );
       } else if (!urls && isSpa) {
-        data = await getRoutesAndOgData(`http://localhost:${portOfProject}`);
+        data = await getUrlsAndOgDataForSpa(
+          `http://localhost:${portOfProject}`
+        );
       }
 
       const preview = generatePreview(data || []);

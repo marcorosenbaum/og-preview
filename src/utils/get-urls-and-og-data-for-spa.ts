@@ -2,24 +2,14 @@ import puppeteer from "puppeteer";
 import { Page } from "../interfaces";
 
 const pages: Page[] = [];
-const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
+const getUrlsAndOgDataForSpa = async (url: string): Promise<Page[] | null> => {
   console.log("* getRoutesAndOgData with puppeteer *");
-  // check for valid website not working properly
-  // const response = await fetch(url);
-  // const contentType = response.headers.get("content-type");
-  // if (!contentType || !contentType.includes("text/html")) {
-  //   console.error(
-  //     "Provided port is not serving an HTML site. Please make sure you provide the port where your project is running."
-  //   );
-  //   return null;
-  // }
 
   const alreadyExistingPage = pages.some((page) => page.url === url);
   if (alreadyExistingPage) {
     return pages;
   }
   try {
-    // What if the user is using a different browser?
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
@@ -67,7 +57,7 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
     }, url);
 
     for (const link of links) {
-      await getRoutesAndOgData(link);
+      await getUrlsAndOgDataForSpa(link);
     }
 
     await browser.close();
@@ -79,4 +69,4 @@ const getRoutesAndOgData = async (url: string): Promise<Page[] | null> => {
   }
 };
 
-export default getRoutesAndOgData;
+export default getUrlsAndOgDataForSpa;

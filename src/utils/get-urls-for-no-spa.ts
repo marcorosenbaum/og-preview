@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import { load } from "cheerio";
 import axios from "axios";
 import url from "url";
 
@@ -17,7 +17,7 @@ async function getUrlsForNoSpa(baseUrl: string): Promise<string[]> {
 
     try {
       const response = await axios.get(currentUrl);
-      const $ = cheerio.load(response.data);
+      const $ = load(response.data);
 
       const links = $("a[href]");
       links.each((index, element) => {

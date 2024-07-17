@@ -2,8 +2,6 @@ import puppeteer from "puppeteer";
 
 // test again
 const getOgDataForSpa = async (url: string) => {
-  console.log("*getOgDataForSpa using puppeteer *");
-
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();

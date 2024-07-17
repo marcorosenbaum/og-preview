@@ -1,15 +1,6 @@
-interface Page {
-  url: string;
-  ogData: OgData;
-}
+import { Page } from "../interfaces";
 
-interface OgData {
-  title: string;
-  description: string;
-  image: string;
-}
 const generatePreview = (pages: Page[]) => {
-  console.log(pages);
   return pages
     .map(
       (page) => `
@@ -19,11 +10,11 @@ const generatePreview = (pages: Page[]) => {
             <meta name="description" content="${page.ogData.description}">
             <meta property="og:image" content="${page.ogData.image}">
           </head>
-          <body style="font-family: sans-serif; max-width: 650px; background-color: #afe5ff; margin: 0 auto;">
+          <body style="font-family: sans-serif; max-width: 650px; background-color: #a6a6a6; margin: 0 auto;">
             <a style="display: inline-block; padding-top: 2rem; padding-bottom: 0.5rem;" href=${
               page.url
             }>${page.url}</a>
-            <div style="height: 200px; display: flex; gap: 2rem; border-radius: 0.75rem; background-color: #fff; padding: 1rem;">
+            <div style="box-shadow:  0 0 1rem #777; height: 200px; display: flex; gap: 2rem; border-radius: 0.75rem; background-color: #fff; padding: 1rem;">
               ${
                 page.ogData.image
                   ? `<img style="object-fit: cover; width: 200px; border-radius: 0.75rem;" src="${page.ogData.image}" alt="OG preview" />`

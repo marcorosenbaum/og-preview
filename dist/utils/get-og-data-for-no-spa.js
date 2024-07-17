@@ -8,12 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import axios from "axios";
-import cheerio from "cheerio";
+import { load } from "cheerio";
 const getOgDataForNoSpa = (url) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("* using axios and cheerio * for url:", url);
     try {
         const response = yield axios.get(url);
-        const $ = cheerio.load(response.data);
+        const $ = load(response.data);
         const ogData = {
             title: $("meta[property='og:title']").attr("content") || null,
             description: $("meta[property='og:description']").attr("content") || null,

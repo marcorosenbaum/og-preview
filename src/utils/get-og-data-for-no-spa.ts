@@ -1,12 +1,11 @@
 import axios from "axios";
-import cheerio from "cheerio";
+import { load } from "cheerio";
 
 const getOgDataForNoSpa = async (url: string) => {
-  console.log("* using axios and cheerio * for url:", url);
   try {
     const response = await axios.get(url);
 
-    const $ = cheerio.load(response.data);
+    const $ = load(response.data);
 
     const ogData = {
       title: $("meta[property='og:title']").attr("content") || null,

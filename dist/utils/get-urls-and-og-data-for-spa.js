@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import puppeteer from "puppeteer";
 const pages = [];
 const getUrlsAndOgDataForSpa = (url) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("* getRoutesAndOgData with puppeteer *");
     const alreadyExistingPage = pages.some((page) => page.url === url);
     if (alreadyExistingPage) {
         return pages;

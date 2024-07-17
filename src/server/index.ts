@@ -33,13 +33,32 @@ const startServer = async (portOfProject: number, spa: boolean) => {
         );
       };
 
+      function convertUrlsToLocalhost(urls: string[], port: number): string[] {
+        return urls
+          .map((url) => {
+            try {
+              const parsedUrl = new URL(url);
+              return `http://localhost:${port}${parsedUrl.pathname}`;
+            } catch (e) {
+              console.error(`Invalid URL: ${url}`);
+              return "";
+            }
+          })
+          .filter((url) => url !== ""); // Filter out any invalid URLs that resulted in an empty string
+      }
+
       try {
         const sitemap = await axios.get(
           `http://localhost:${portOfProject}/sitemap.xml`
         );
         const parser = new xml2js.Parser();
         const sitemapData = await parser.parseStringPromise(sitemap.data);
-        urls = sitemapData.urlset.url.map((url: any) => url.loc[0]);
+        const urlsFromSitemap = sitemapData.urlset.url.map(
+          (url: any) => url.loc[0]
+        );
+        console.log("__URLS_FROM_SITEMAP__", urlsFromSitemap);
+        urls = convertUrlsToLocalhost(urlsFromSitemap, portOfProject);
+        console.log("__URLS__", urls);
       } catch (e) {
         console.log("No sitemap found, generating urls from the website");
       }

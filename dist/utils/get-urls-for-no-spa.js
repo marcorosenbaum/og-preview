@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import cheerio from "cheerio";
+import { load } from "cheerio";
 import axios from "axios";
 import url from "url";
 function getUrlsForNoSpa(baseUrl) {
@@ -23,7 +23,7 @@ function getUrlsForNoSpa(baseUrl) {
             console.log(`Crawling: ${currentUrl}`);
             try {
                 const response = yield axios.get(currentUrl);
-                const $ = cheerio.load(response.data);
+                const $ = load(response.data);
                 const links = $("a[href]");
                 links.each((index, element) => {
                     const href = $(element).attr("href");

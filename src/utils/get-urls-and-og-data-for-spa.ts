@@ -3,8 +3,6 @@ import { Page } from "../interfaces";
 
 const pages: Page[] = [];
 const getUrlsAndOgDataForSpa = async (url: string): Promise<Page[] | null> => {
-  console.log("* getRoutesAndOgData with puppeteer *");
-
   const alreadyExistingPage = pages.some((page) => page.url === url);
   if (alreadyExistingPage) {
     return pages;

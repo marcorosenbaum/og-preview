@@ -1,6 +1,6 @@
 # og-preview
 
-**Please note: Package is still in development process.**
+**Please note: Package is still in development process. If you encounter any issues, please report them as described in the [Report Issues](#report-issues) section**
 
 `og-preview` is a handy CLI tool for developers to preview all available Open Graph meta data from their local development server. This allows you to check how your project's Open Graph data will appear on social media platforms without deploying your project or checking every URL manually.
 
@@ -16,7 +16,8 @@ You can then use the package for all projects you are working on.
 
 ## Usage
 
-Ensure your project is running on your local development server. For example, if your project is running at http://localhost:5173, you can use og-preview to preview the Open Graph meta data running on that port.
+Ensure your project is running on your local development server and is open in the browser. For example, if your project is running at http://localhost:5173, you can use og-preview to preview the Open Graph meta data of the project running on that port. <br>
+Restart the og-preview server after you made changes to any meta data in your project.
 
 ## Command
 
@@ -53,12 +54,12 @@ This will generate a preview of all available Open Graph meta data and open it i
 ## Features
 
 - **Easy to Use:** Simple CLI command to get a preview of all available Open Graph meta data.
-- **Local Development:** Works with your local dev server, no need to deploy.
+- **Local Development:** Works with your local development server, no need to deploy.
 - **Quick Preview:** Instantly opens a new browser tab with the Open Graph preview.
 
 ## Example Workflow
 
-1. Start your local development server: Ensure your project is running locally, e.g., http://localhost:5173.
+1. Start your local development server: Ensure your project is running locally and is open in the browser, e.g. http://localhost:5173.
 
 2. Run og-preview: Execute the following command in your CLI:
 
@@ -69,4 +70,21 @@ og-preview start -p 5173 --spa
 View the Preview: A new browser tab will open displaying the Open Graph meta data for your project.<br>
 See example below:
 
-![Open Graph Preview](./src/images/example-preview.png)
+![Open Graph Preview](./src/images/og-preview-example.png)
+
+## Report Issues
+
+Please help me to improve this package.
+If you encounter any bugs or issues, please report them by following these steps:
+
+1. **Search Existing Issues**: Before submitting a new issue, please check if it has already been reported in the [Issues section](https://github.com/marcorosenbaum/og-preview/issues).
+2. **Open a New Issue**: If the issue is not already reported, open a new issue by clicking on the "New Issue" button.
+3. **Provide Details**: Include as much detail as possible in your report. This should include:
+   - A descriptive title
+   - Steps to reproduce the issue
+   - Expected behavior
+   - Actual behavior
+   - Screenshots or logs (if applicable)
+   - Environment details (e.g., OS, Node.js version, npm version)
+
+**Thank you for your help!**

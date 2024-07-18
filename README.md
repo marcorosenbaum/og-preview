@@ -8,7 +8,7 @@
 
 ### Local Installation
 
-To install `og-preview` globally, run the following command:
+To install `og-preview` locally, run the following command in your projects root directory:
 
 ```sh
 npm install og-preview

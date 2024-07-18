@@ -56,9 +56,7 @@ const startServer = async (portOfProject: number, spa: boolean) => {
         const urlsFromSitemap = sitemapData.urlset.url.map(
           (url: any) => url.loc[0]
         );
-        console.log("__URLS_FROM_SITEMAP__", urlsFromSitemap);
         urls = convertUrlsToLocalhost(urlsFromSitemap, portOfProject);
-        console.log("__URLS__", urls);
       } catch (e) {
         console.log("No sitemap found, generating urls from the website");
       }

@@ -1,10 +1,20 @@
 # og-preview
 
-**Please note: Package is still in development process. If you encounter any issues, please report them as described in the [Report Issues](#report-issues) section**
+**Please note: Package is still in development process. If you encounter any issues, please report them as described in the [Report Issues](#report-issues) section.**
 
-`og-preview` is a handy CLI tool for developers to preview all available Open Graph meta data from their local development server. This allows you to check how your project's Open Graph data will appear on social media platforms without deploying your project or checking every URL manually.
+`og-preview` is a CLI tool for developers to preview all available Open Graph meta data from the local development server. This allows you to check how the links of your website will appear on social media platforms without deploying your project or checking every URL manually. You simply need to execute a single CLI command.
 
 ## Installation
+
+### Local Installation
+
+To install `og-preview` globally, run the following command:
+
+```sh
+npm install og-preview
+```
+
+### Global Installation
 
 To install `og-preview` globally, run the following command:
 
@@ -16,23 +26,39 @@ You can then use the package for all projects you are working on.
 
 ## Usage
 
-Ensure your project is running on your local development server and is open in the browser. For example, if your project is running at http://localhost:5173, you can use og-preview to preview the Open Graph meta data of the project running on that port. <br>
+Ensure your project is running on your local development server and is open in the browser. For example, if your project is running at http://localhost:5173, you can use og-preview to view the Open Graph meta data of the project running on that port.
+
+This way you can easily check if the links of your website will appear as expected when shared on social media.
+
 Restart the og-preview server after you made changes to any meta data in your project.
 
 ## Command
 
-Replace **PORT** with the port number your local development server is running on.
+**Note:** When installed locally, you need to add `npx` in the beginning of the command.
 
-If your project **is** a Single Page Application, you must set the flag **<nobr>--spa</nobr>**.<br>
+Replace `PORT` with the port number that your local development server is running on.
+
+If your project **is** a Single Page Application, you must set the flag <nobr>`--spa`</nobr>.<br>
+If your page **is not** a Single Page Application, you must set the flag <nobr>`--nospa`</nobr>.
+
+#### Locally installed:
 
 ```sh
-og-preview start -p PORT --spa
+npx og-preview start -p PORT --spa
 ```
 
-If your page **is not** a Single Page Application, you must set the flag **<nobr>--nospa</nobr>**.
+```sh
+npx og-preview start -p PORT --nospa
+```
+
+#### Globally installed:
 
 ```sh
-og-preview start -p PORT --nospa
+ og-preview start -p PORT --spa
+```
+
+```sh
+ og-preview start -p PORT --nospa
 ```
 
 ## Example
@@ -49,7 +75,7 @@ If your project is running on port 5173 and **is not SPA**, use the following co
 og-preview start -p 5173 --nospa
 ```
 
-This will generate a preview of all available Open Graph meta data and open it in a new browser tab.
+This will generate a preview of how the links of your website will appear when shared on social media platforms.
 
 ## Features
 
@@ -63,12 +89,19 @@ This will generate a preview of all available Open Graph meta data and open it i
 
 2. Run og-preview: Execute the following command in your CLI:
 
+#### Package Installed locally:
+
+```sh
+npx og-preview start -p 5173 --spa
+```
+
+#### Package Installed globally:
+
 ```sh
 og-preview start -p 5173 --spa
 ```
 
-View the Preview: A new browser tab will open displaying the Open Graph meta data for your project.<br>
-See example below:
+A new browser tab will automatically open, displaying the Open Graph meta data for your project:
 
 ![Open Graph Preview](./src/images/og-preview-example.png)
 

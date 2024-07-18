@@ -1,6 +1,6 @@
 {
   "name": "og-preview",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Generates a preview of all avaiable open graph meta data. Simply execute a CLI command and preview in the browser how all the links of your website will appear on social media platforms.",
   "main": "index.js",
   "type": "module",
@@ -11,13 +11,15 @@
   "repository": "marcorosenbaum/og-preview",
   "license": "MIT",
   "keywords": [
-    "open graph",
     "og",
+    "open graph",
     "og-data",
-    "open graph preview",
     "og preview",
+    "open graph preview",
+    "og meta data",
     "og-meta-data",
-    "open graph meta data"
+    "open graph meta data",
+    "social media preview"
   ],
   "dependencies": {
     "@types/express": "^4.17.21",

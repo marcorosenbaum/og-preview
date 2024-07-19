@@ -44,7 +44,7 @@ const startServer = async (portOfProject: number, spa: boolean) => {
               return "";
             }
           })
-          .filter((url) => url !== ""); // Filter out any invalid URLs that resulted in an empty string
+          .filter((url) => url !== "");
       }
 
       try {

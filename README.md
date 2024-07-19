@@ -39,7 +39,7 @@ Restart the og-preview server after you made changes to any meta data in your pr
 Replace `PORT` with the port number that your local development server is running on.
 
 If your project **is** a Single Page Application, you must set the flag <nobr>`--spa`</nobr>.<br>
-If your page **is not** a Single Page Application, you must set the flag <nobr>`--nospa`</nobr>.
+If your project **is not** a Single Page Application, you must set the flag <nobr>`--nospa`</nobr>.
 
 #### Locally installed:
 
@@ -100,6 +100,11 @@ npx og-preview start -p 5173 --spa
 ```sh
 og-preview start -p 5173 --spa
 ```
+
+## Usage without installation
+
+You can also generate a preview without installing the package. The workflow is exact the same as for the local installation. <br>
+Just keep in mind that the execution time will be longer and therefore this practice is more convienent for testing the package or getting an one-off preview.
 
 A new browser tab will automatically open, displaying the Open Graph meta data for your project:
 

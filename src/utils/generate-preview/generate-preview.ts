@@ -1,4 +1,4 @@
-import { Page } from "../interfaces";
+import { Page } from "../../interfaces";
 
 const generatePreview = (pages: Page[]) => {
   return pages

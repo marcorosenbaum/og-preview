@@ -14,11 +14,12 @@ import portfinder from "portfinder";
 import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
-import getUrlsForNoSpa from "../utils/get-urls-for-no-spa.js";
-import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
-import getOgDataForSpa from "../utils/get-og-data-for-spa.js";
-import getUrlsAndOgDataForSpa from "../utils/get-urls-and-og-data-for-spa.js";
-import generatePreview from "../utils/generate-preview.js";
+import getUrlsForNoSpa from "../utils/get-urls-for-no-spa/get-urls-for-no-spa.js";
+import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa/get-og-data-for-no-spa.js";
+import getOgDataForSpa from "../utils/get-og-data-for-spa/get-og-data-for-spa.js";
+import getUrlsAndOgDataForSpa from "../utils/get-urls-and-og-data-for-spa/get-urls-and-og-data-for-spa.js";
+import generatePreview from "../utils/generate-preview/generate-preview.js";
+import convertUrlsToLocalhost from "../utils/convert-urls-to-localhost/convert-urls-to-localhost.js";
 const startServer = (portOfProject, spa) => __awaiter(void 0, void 0, void 0, function* () {
     const previewPort = yield portfinder.getPortPromise({ port: 3000 });
     const app = express();
@@ -34,28 +35,12 @@ const startServer = (portOfProject, spa) => __awaiter(void 0, void 0, void 0, fu
                     return yield getOgDataForNoSpa(url);
                 })));
             });
-            function convertUrlsToLocalhost(urls, port) {
-                return urls
-                    .map((url) => {
-                    try {
-                        const parsedUrl = new URL(url);
-                        return `http://localhost:${port}${parsedUrl.pathname}`;
-                    }
-                    catch (e) {
-                        console.error(`Invalid URL: ${url}`);
-                        return "";
-                    }
-                })
-                    .filter((url) => url !== ""); // Filter out any invalid URLs that resulted in an empty string
-            }
             try {
                 const sitemap = yield axios.get(`http://localhost:${portOfProject}/sitemap.xml`);
                 const parser = new xml2js.Parser();
                 const sitemapData = yield parser.parseStringPromise(sitemap.data);
                 const urlsFromSitemap = sitemapData.urlset.url.map((url) => url.loc[0]);
-                console.log("__URLS_FROM_SITEMAP__", urlsFromSitemap);
                 urls = convertUrlsToLocalhost(urlsFromSitemap, portOfProject);
-                console.log("__URLS__", urls);
             }
             catch (e) {
                 console.log("No sitemap found, generating urls from the website");

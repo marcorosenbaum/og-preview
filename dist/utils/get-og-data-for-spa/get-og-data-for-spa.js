@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import puppeteer from "puppeteer";
-// test again
 const getOgDataForSpa = (url) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const browser = yield puppeteer.launch();

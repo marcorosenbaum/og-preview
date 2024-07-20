@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer";
-import { Page } from "../interfaces";
+import { Page } from "../../interfaces";
 
 const pages: Page[] = [];
 const getUrlsAndOgDataForSpa = async (url: string): Promise<Page[] | null> => {

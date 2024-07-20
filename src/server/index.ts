@@ -6,11 +6,12 @@ import axios from "axios";
 import xml2js from "xml2js";
 import { Command } from "commander";
 
-import getUrlsForNoSpa from "../utils/get-urls-for-no-spa.js";
-import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa.js";
-import getOgDataForSpa from "../utils/get-og-data-for-spa.js";
-import getUrlsAndOgDataForSpa from "../utils/get-urls-and-og-data-for-spa.js";
-import generatePreview from "../utils/generate-preview.js";
+import getUrlsForNoSpa from "../utils/get-urls-for-no-spa/get-urls-for-no-spa.js";
+import getOgDataForNoSpa from "../utils/get-og-data-for-no-spa/get-og-data-for-no-spa.js";
+import getOgDataForSpa from "../utils/get-og-data-for-spa/get-og-data-for-spa.js";
+import getUrlsAndOgDataForSpa from "../utils/get-urls-and-og-data-for-spa/get-urls-and-og-data-for-spa.js";
+import generatePreview from "../utils/generate-preview/generate-preview.js";
+import convertUrlsToLocalhost from "../utils/convert-urls-to-localhost/convert-urls-to-localhost.js";
 
 const startServer = async (portOfProject: number, spa: boolean) => {
   const previewPort = await portfinder.getPortPromise({ port: 3000 });
@@ -32,20 +33,6 @@ const startServer = async (portOfProject: number, spa: boolean) => {
           })
         );
       };
-
-      function convertUrlsToLocalhost(urls: string[], port: number): string[] {
-        return urls
-          .map((url) => {
-            try {
-              const parsedUrl = new URL(url);
-              return `http://localhost:${port}${parsedUrl.pathname}`;
-            } catch (e) {
-              console.error(`Invalid URL: ${url}`);
-              return "";
-            }
-          })
-          .filter((url) => url !== "");
-      }
 
       try {
         const sitemap = await axios.get(

@@ -1,7 +1,5 @@
 # og-preview
 
-**Please note: Package is still in development process. If you encounter any issues, please report them as described in the [Report Issues](#report-issues) section.**
-
 `og-preview` is a CLI tool to preview all available Open Graph meta data from the local development server. This allows you to check how the links of your website will appear on social media platforms without deploying your project or checking every URL manually. You simply need to execute a single CLI command.
 
 ## Installation

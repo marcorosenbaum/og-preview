@@ -26,12 +26,23 @@ const startServer = async (portOfProject: number, spa: boolean) => {
       const isSpa = spa;
 
       const setData = async () => {
-        // refactor to promise.allSettled()
-        data = await Promise.all(
+        const results = await Promise.allSettled(
           urls.map(async (url: string) => {
-            return await getOgDataForNoSpa(url);
+            return spa
+              ? await getOgDataForSpa(url)
+              : await getOgDataForNoSpa(url);
           })
         );
+        data = results.map((result) => {
+          if (result.status === "fulfilled") {
+            return result.value;
+          } else {
+            return {
+              url: result.reason.url,
+              ogData: { title: null, description: null, image: null },
+            };
+          }
+        });
       };
 
       try {
@@ -54,11 +65,7 @@ const startServer = async (portOfProject: number, spa: boolean) => {
         urls = await getUrlsForNoSpa(`http://localhost:${portOfProject}`);
         await setData();
       } else if (urls && isSpa) {
-        data = await Promise.all(
-          urls.map(async (url: string) => {
-            return await getOgDataForSpa(url);
-          })
-        );
+        await setData();
       } else if (!urls && isSpa) {
         data = await getUrlsAndOgDataForSpa(
           `http://localhost:${portOfProject}`

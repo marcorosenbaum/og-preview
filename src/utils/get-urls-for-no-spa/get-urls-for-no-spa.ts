@@ -13,7 +13,6 @@ async function getUrlsForNoSpa(baseUrl: string): Promise<string[]> {
     }
 
     visitedUrls.add(currentUrl);
-    console.log(`Crawling: ${currentUrl}`);
 
     try {
       const response = await axios.get(currentUrl);

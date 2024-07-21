@@ -20,7 +20,6 @@ function getUrlsForNoSpa(baseUrl) {
                 continue;
             }
             visitedUrls.add(currentUrl);
-            console.log(`Crawling: ${currentUrl}`);
             try {
                 const response = yield axios.get(currentUrl);
                 const $ = load(response.data);

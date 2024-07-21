@@ -30,10 +30,22 @@ const startServer = (portOfProject, spa) => __awaiter(void 0, void 0, void 0, fu
             let data = [];
             const isSpa = spa;
             const setData = () => __awaiter(void 0, void 0, void 0, function* () {
-                // refactor to promise.allSettled()
-                data = yield Promise.all(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
-                    return yield getOgDataForNoSpa(url);
+                const results = yield Promise.allSettled(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
+                    return spa
+                        ? yield getOgDataForSpa(url)
+                        : yield getOgDataForNoSpa(url);
                 })));
+                data = results.map((result) => {
+                    if (result.status === "fulfilled") {
+                        return result.value;
+                    }
+                    else {
+                        return {
+                            url: result.reason.url,
+                            ogData: { title: null, description: null, image: null },
+                        };
+                    }
+                });
             });
             try {
                 const sitemap = yield axios.get(`http://localhost:${portOfProject}/sitemap.xml`);
@@ -53,9 +65,7 @@ const startServer = (portOfProject, spa) => __awaiter(void 0, void 0, void 0, fu
                 yield setData();
             }
             else if (urls && isSpa) {
-                data = yield Promise.all(urls.map((url) => __awaiter(void 0, void 0, void 0, function* () {
-                    return yield getOgDataForSpa(url);
-                })));
+                yield setData();
             }
             else if (!urls && isSpa) {
                 data = yield getUrlsAndOgDataForSpa(`http://localhost:${portOfProject}`);

@@ -59,12 +59,10 @@ const startServer = async (portOfProject: number, spa: boolean) => {
         console.log("No sitemap found, generating urls from the website");
       }
 
-      if (urls && !isSpa) {
+      if (urls) {
         await setData();
       } else if (!urls && !isSpa) {
         urls = await getUrlsForNoSpa(`http://localhost:${portOfProject}`);
-        await setData();
-      } else if (urls && isSpa) {
         await setData();
       } else if (!urls && isSpa) {
         data = await getUrlsAndOgDataForSpa(

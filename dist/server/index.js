@@ -57,14 +57,11 @@ const startServer = (portOfProject, spa) => __awaiter(void 0, void 0, void 0, fu
             catch (e) {
                 console.log("No sitemap found, generating urls from the website");
             }
-            if (urls && !isSpa) {
+            if (urls) {
                 yield setData();
             }
             else if (!urls && !isSpa) {
                 urls = yield getUrlsForNoSpa(`http://localhost:${portOfProject}`);
-                yield setData();
-            }
-            else if (urls && isSpa) {
                 yield setData();
             }
             else if (!urls && isSpa) {
